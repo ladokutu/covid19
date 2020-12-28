@@ -152,83 +152,58 @@ const messaging = firebase.messaging();
 	</div>
 	</div>
 		
-		
-							<?php
-												$url=  "https://indonesia-covid-19.mathdro.id/api";
-												$json = file_get_contents("$url");
-												$books = json_decode($json,true);
-												
-												   
-												$meninggal=$books['meninggal']; 
-												$sembuh=$books['sembuh']; 
-												$perawatan=$books['perawatan']; 
-												$jumlahKasus=$books['jumlahKasus']; 
-												
-										?>
-							
-							<div class="divider divider-margins"></div>
-							<div class="content bottom-0">
-							<div class="one-half">
-							<div class="icon-column-center">
-							<i class="fa fa-users bg-yellow1-dark shadow-huge"></i>
-							
-							
-							<h1><?php echo $jumlahKasus; ?></h1>
-							<span class="color-highlight">Total Kasus</span>
-							<p>
-							Total Kasus Postif Corona.
-							</p>
-							</div>
-							</div>
-							<div class="one-half last-column">
-							<div class="icon-column-center">
-							<i class="fa fa-user-times bg-red2-dark shadow-huge"></i>
-							<h1><?php echo $meninggal; ?></h1>
-							<span class="color-highlight">Meninggal</span>
-							<p>
-							Jumlah Pasien Meninggal.
-							</p>
-							</div>
-							</div>
-							<div class="one-half">
-							<div class="icon-column-center">
-							<i class="fa fa-user-md bg-blue2-dark shadow-huge"></i>
-							<h1><?php echo $perawatan; ?></h1>
-							<span class="color-highlight">Perawatan</span>
-							<p>
-							Jumlah Pasien dalam Perawatan.
-							</p>
-							</div>
-							</div>
-							<div class="one-half last-column">
-							<div class="icon-column-center">
-							<i class="fa fa-user bg-green1-dark shadow-huge"></i>
-							<h1><?php echo $sembuh; ?></h1>
-							<span class="color-highlight">Sembuh</span>
-							<p>
-							Jumlah Pasien yang Sembuh.
-							</p>
-							</div>
-							</div>
-							<div class="clear"></div>
-							</div>
-
-
-
-
-
-
-<div class="divider divider-margins"></div>
-
-
-
-<div class="content">
-<h2>Berdasarkan Provinsi</h2>
-<div id="app">
+<div id="app">		
 	<v-app>
 		<v-main>
 			<v-container>
-			
+
+		<div class="content bottom-0">
+			<template>
+				<div class="one-half">
+				<div class="icon-column-center">
+				<i class="fa fa-users bg-yellow1-dark shadow-huge"></i>
+				<h1><a v-for="dasboard">{{ dasboard.jumlahKasus }} </a></h1>
+				<span class="color-highlight">Total Kasus</span>
+				<p>Total Kasus Postif Corona.</p>
+				</div>
+				</div>
+											
+				<div class="one-half last-column">
+				<div class="icon-column-center">
+				<i class="fa fa-user-times bg-red2-dark shadow-huge"></i>
+				<h1><a v-for="dasboard">{{ dasboard.meninggal }} </a></h1>
+				<span class="color-highlight">Meninggal</span>
+				<p>Jumlah Pasien Meninggal.</p>
+				</div>
+				</div>
+											
+				<div class="one-half">
+				<div class="icon-column-center">
+				<i class="fa fa-user-md bg-blue2-dark shadow-huge"></i>
+				<h1><a v-for="dasboard">{{ dasboard.perawatan }} </a></h1>
+				<span class="color-highlight">Perawatan</span>
+				<p>Jumlah Pasien dalam Perawatan.</p>
+				</div>
+				</div>
+											
+				<div class="one-half last-column">
+				<div class="icon-column-center">
+				<i class="fa fa-user bg-green1-dark shadow-huge"></i>
+				<h1><a v-for="dasboard">{{ dasboard.sembuh }} </a></h1>
+				<span class="color-highlight">Sembuh</span>
+				<p>Jumlah Pasien yang Sembuh.</p>
+				</div>
+				</div>
+											
+			</template>			
+							
+						
+	</div>
+	
+<div class="divider divider-margins"></div>
+
+<div class="content">
+			<div class="divider divider-margins"></div>
 			<template>
 				<v-card-title>
 					Data Berdasarkan Provinsi di Indonesia
@@ -272,8 +247,6 @@ const messaging = firebase.messaging();
 		el: '#app',
 		vuetify: new Vuetify(),
 			data: {
-				loading: false,
-				description_item: '',
 				search: '',
 				headers: [
 							{ text: 'Provinsi ', value: 'provinsi' },
@@ -281,18 +254,17 @@ const messaging = firebase.messaging();
 							{ text: 'Kasus Sembuh', value: 'kasusSemb' },
 							{ text: 'Kasus Meninggal', value: 'kasusMeni' }
 						 ],
-								master: []
-							},
-							created: function () {
-								this.getItems()
-							},
-							mounted(){
-								this.getItems();
-							},
-							methods: {
-						 
-										// Get Product
-										getItems: function () {
+				master: [],
+				dasboard: [],
+				},
+				created: function () {
+					this.getdatas();
+				},			
+				mounted(){
+					this.getItems();
+				},
+				methods: {
+					getItems: function () {
 											axios.get('https://indonesia-covid-19.mathdro.id/api/provinsi')
 												.then(res => {
 													this.master=res.data.data;
@@ -301,9 +273,22 @@ const messaging = firebase.messaging();
 													// handle error
 													console.log(err);
 												})
-										},								
-							}
-						})
+										},	
+					getdatas: function () {
+											axios.get('https://indonesia-covid-19.mathdro.id/api')
+												.then(res => {
+													this.dasboard=res.data;
+												})
+												.catch(err => {
+													// handle error
+													console.log(err);
+												})
+										},
+
+
+										
+						}
+			})
 
 </script>
 

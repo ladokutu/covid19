@@ -152,43 +152,93 @@ const messaging = firebase.messaging();
 		
 
 
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
 <div class="divider divider-margins"></div>
 <div class="content">
-<h2>Berdasrkan Update Harian</h2>
-<p>
-Data Berdasarkan Update Harian di Indonesia
-</p>
-<table class="table-borders shadow-huge round-medium">
-<tr>
-<td class="bg-dark2-dark"><h4>No</h4></td>
-<td class="bg-dark2-dark"><h4>Hari Ke</h4></td>
-<td class="bg-dark2-dark"><h4>Kasus Baru</h4></td>
-<td class="bg-dark2-dark"><h4>Jumlah Perawatan</h4></td>
 
+	<div id="app">		
+		<v-app>
+			<v-main>
+				<v-container>
 
-</tr>
-<?php 
-								$no=0;
-								$url="https://indonesia-covid-19.mathdro.id/api/harian";
-								$json = file_get_contents("$url");
-								$books = json_decode($json,true);
-								foreach ($books['data'] as $bok){
-		
-								?>
-<tr>
-<td class="bg-dark1-light"><?php echo ++$no; ?></td>
-<td class="bg-dark1-light"><?php echo $bok['harike']; ?></td>
-<td class="bg-dark1-light"><?php echo $bok['jumlahKasusBaruperHari']; ?></td>
+			<template>
+					<v-card-title>
+						Data  Kasus Harian
+						<v-spacer></v-spacer>
+							<v-text-field
+								v-model="search"
+								append-icon=""
+								label="Search"
+								single-line
+								hide-details
+							></v-text-field>
+							</v-card-title>
+								 <v-data-table class="table-borders shadow-huge round-medium"
+									:headers="headers"
+									:items="master"
+									:search="search"
+								>
+									<template v-slot:item.action="{ item }">
+										 <v-btn color="info" depressed small @click="getEdit(item)">
+									<i class="fas fa-edit fa-sm"></i>
+										</v-btn>
+									<v-btn color="error" depressed small @click="getDelete(item)">
+										<i class="fas fa-trash fa-sm"></i>
+											</v-btn>
+									</template>
+								</v-data-table>
+				</template>
+				
+				 </v-container>
+			</v-main>
+		</v-app>
+	</div>
 
-<td class="bg-dark1-light"><?php echo $bok['jumlahpasiendalamperawatan']; ?></td>
-
-</tr>
-
-								<?php } ?>
-
-
-</table>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+	new Vue({
+		el: '#app',
+		vuetify: new Vuetify(),
+			data: {
+				search: '',
+				headers: [
+							{ text: 'Tanggal ', value: 'tanggal' },
+							{ text: 'Komulatif', value: 'jumlahKasusKumulatif' },
+							{ text: 'Sembuh', value: 'jumlahPasienSembuh' },
+							{ text: 'Meninggal', value: 'jumlahPasienMeninggal' },
+							{ text: 'Perawatan', value: 'jumlahPasienDalamPerawatan' }
+						 ],
+				master: [],
+				},
+						
+				mounted(){
+					this.getItems();
+				},
+				methods: {
+					getItems: function () {
+											axios.get('https://indonesia-covid-19.mathdro.id/api/harian')
+												.then(res => {
+													this.master=res.data.data;
+												})
+												.catch(err => {
+													// handle error
+													console.log(err);
+												})
+										},	
+
+
+										
+						}
+			})
+
+</script>
 
 
 

@@ -30,86 +30,14 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   
 <link rel="manifest" href="manifest.json">
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
-  // Initialize Firebase
-  /*Update this config*/
-	var config = {
-    apiKey: "AIzaSyDG1kUz4mb65YpxC1Un3c-SwkP5vbqpPvY",
-    authDomain: "e-document-6ebe9.firebaseapp.com",
-    databaseURL: "https://e-document-6ebe9.firebaseio.com",
-    projectId: "e-document-6ebe9",
-    storageBucket: "e-document-6ebe9.appspot.com",
-    messagingSenderId: "934218502137",
-    appId: "1:934218502137:web:aed8cad6af347cd69d7728"
-
-
-
-  };
-  firebase.initializeApp(config);
-
-	// Retrieve Firebase Messaging object.
-const messaging = firebase.messaging();
-	messaging.requestPermission()
-	.then(function() {
-	  console.log('Notification permission granted.');
-	  // TODO(developer): Retrieve an Instance ID token for use with FCM.
-	  if(isTokenSentToServer()) {
-	  	console.log('Token already saved.');
-	  } else {
-	  	getRegToken();
-	  }
-
-	})
-	.catch(function(err) {
-	  console.log('Unable to get permission to notify.', err);
-	});
-
-	function getRegToken(argument) {
-		messaging.getToken()
-		  .then(function(currentToken) {
-		    if (currentToken) {
-		      saveToken(currentToken);
-		      console.log(currentToken);
-		      setTokenSentToServer(true);
-		    } else {
-		      console.log('No Instance ID token available. Request permission to generate one.');
-		      setTokenSentToServer(false);
-		    }
-		  })
-		  .catch(function(err) {
-		    console.log('An error occurred while retrieving token. ', err);
-		    setTokenSentToServer(false);
-		  });
-	}
-
-	function setTokenSentToServer(sent) {
-	    window.localStorage.setItem('sentToServer', sent ? 1 : 0);
-	}
-
-	function isTokenSentToServer() {
-	    return window.localStorage.getItem('sentToServer') == 1;
-	}
-
-	function saveToken(currentToken) {
-		$.ajax({
-			url: 'fcm-push/action.php',
-			method: 'post',
-			data: 'token=' + currentToken
-		}).done(function(result){
-			console.log(result);
-		})
-	}
-
-	messaging.onMessage(function(payload) {
-	  console.log("Message received. ", payload);
-	  notificationTitle = payload.data.title;
-	  notificationOptions = {
-	  	body: payload.data.body,
-	  	icon: payload.data.icon,
-	  	image:  payload.data.image
-	  };
-	  var notification = new Notification(notificationTitle,notificationOptions);
-	});
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "d1241d79-9504-430d-90da-d19ef3cbe270",
+    });
+  });
 </script>
 
 </head>
@@ -209,7 +137,7 @@ const messaging = firebase.messaging();
 			data: {
 				search: '',
 				headers: [
-							{ text: 'Hari ke', value: 'harike' },
+							{ text: 'Tanggal ', value: 'tanggal' },
 							{ text: 'Komulatif', value: 'jumlahKasusKumulatif' },
 							{ text: 'Sembuh', value: 'jumlahPasienSembuh' },
 							{ text: 'Meninggal', value: 'jumlahPasienMeninggal' },
